@@ -1,0 +1,35 @@
+-- Add About Page Fields to Site Settings
+
+ALTER TABLE public.site_settings 
+ADD COLUMN IF NOT EXISTS about_eyebrow_en text,
+ADD COLUMN IF NOT EXISTS about_eyebrow_ar text,
+ADD COLUMN IF NOT EXISTS about_title_en text,
+ADD COLUMN IF NOT EXISTS about_title_ar text,
+ADD COLUMN IF NOT EXISTS about_subtitle_en text,
+ADD COLUMN IF NOT EXISTS about_subtitle_ar text,
+ADD COLUMN IF NOT EXISTS about_story_en text,
+ADD COLUMN IF NOT EXISTS about_story_ar text,
+ADD COLUMN IF NOT EXISTS about_focus_en text,
+ADD COLUMN IF NOT EXISTS about_focus_ar text,
+ADD COLUMN IF NOT EXISTS about_trust_title_en text,
+ADD COLUMN IF NOT EXISTS about_trust_title_ar text,
+ADD COLUMN IF NOT EXISTS about_trust_description_en text,
+ADD COLUMN IF NOT EXISTS about_trust_description_ar text,
+ADD COLUMN IF NOT EXISTS about_value_1_title_en text,
+ADD COLUMN IF NOT EXISTS about_value_1_title_ar text,
+ADD COLUMN IF NOT EXISTS about_value_1_description_en text,
+ADD COLUMN IF NOT EXISTS about_value_1_description_ar text,
+ADD COLUMN IF NOT EXISTS about_value_2_title_en text,
+ADD COLUMN IF NOT EXISTS about_value_2_title_ar text,
+ADD COLUMN IF NOT EXISTS about_value_2_description_en text,
+ADD COLUMN IF NOT EXISTS about_value_2_description_ar text,
+ADD COLUMN IF NOT EXISTS about_value_3_title_en text,
+ADD COLUMN IF NOT EXISTS about_value_3_title_ar text,
+ADD COLUMN IF NOT EXISTS about_value_3_description_en text,
+ADD COLUMN IF NOT EXISTS about_value_3_description_ar text,
+ADD COLUMN IF NOT EXISTS about_value_4_title_en text,
+ADD COLUMN IF NOT EXISTS about_value_4_title_ar text,
+ADD COLUMN IF NOT EXISTS about_value_4_description_en text,
+ADD COLUMN IF NOT EXISTS about_value_4_description_ar text;
+
+NOTIFY pgrst, 'reload schema';

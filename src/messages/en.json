@@ -1,0 +1,16 @@
+{
+  "Index": {
+    "title": "Full Stack Web Developer",
+    "name": "Hani Alshami",
+    "hero": "Crafting premium, scalable web applications that drive real business value.",
+    "cta": "View My Work",
+    "placeholder": "Public sections will be built in Phase 2"
+  },
+  "Navigation": {
+    "projects": "Projects",
+    "services": "Services",
+    "skills": "Skills",
+    "about": "About",
+    "contact": "Contact"
+  }
+}

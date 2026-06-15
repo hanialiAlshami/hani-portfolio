@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 40 20% 96%;
+
+    --card: 0 0% 5.5%;
+    --card-foreground: 40 20% 96%;
+
+    --popover: 0 0% 5.5%;
+    --popover-foreground: 40 20% 96%;
+
+    --primary: 43 80% 52%;
+    --primary-foreground: 0 0% 5%;
+
+    --secondary: 0 0% 9%;
+    --secondary-foreground: 40 20% 96%;
+
+    --muted: 0 0% 9%;
+    --muted-foreground: 40 8% 56%;
+
+    --accent: 43 80% 52%;
+    --accent-foreground: 0 0% 5%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 12%;
+    --input: 0 0% 10%;
+    --ring: 43 80% 52%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  ::selection {
+    background: hsl(43 80% 52% / 0.25);
+    color: hsl(43 80% 90%);
+  }
+}
+
+/* ─── Glass Morphism ─────────────────────────────── */
+.glass {
+  @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.07] shadow-[0_4px_24px_rgba(0,0,0,0.4)];
+}
+.glass-strong {
+  @apply bg-white/[0.05] backdrop-blur-2xl border border-white/10 shadow-[0_8px_40px_rgba(0,0,0,0.5)];
+}
+
+/* ─── Gold Gradient Text ─────────────────────────── */
+.gold-gradient {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, #b8922a 0%, #f0c653 40%, #d4a836 70%, #c8991e 100%);
+}
+.gold-gradient-subtle {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, #a07820 0%, #d4a836 50%, #b8922a 100%);
+}
+
+/* ─── Gold Glow ──────────────────────────────────── */
+.gold-glow {
+  box-shadow: 0 0 40px rgba(212, 168, 54, 0.15), 0 0 80px rgba(212, 168, 54, 0.05);
+}
+.gold-glow-text {
+  text-shadow: 0 0 30px rgba(212, 168, 54, 0.3);
+}
+
+/* ─── Premium Border ─────────────────────────────── */
+.border-gold {
+  border-color: rgba(212, 168, 54, 0.3);
+}
+.border-gold-strong {
+  border-color: rgba(212, 168, 54, 0.6);
+}
+
+/* ─── Noise texture overlay ──────────────────────── */
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── Hero Mesh Gradient ─────────────────────────── */
+.hero-mesh {
+  background: 
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(212, 168, 54, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 80% 20%, rgba(212, 168, 54, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 80% at 0% 60%, rgba(30, 20, 0, 0.5) 0%, transparent 70%),
+    hsl(0 0% 4%);
+}
+
+/* ─── Section Divider ────────────────────────────── */
+.section-divider {
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 168, 54, 0.2) 30%, rgba(212, 168, 54, 0.4) 50%, rgba(212, 168, 54, 0.2) 70%, transparent 100%);
+  height: 1px;
+}
+
+/* ─── Premium CTA Glow ───────────────────────────── */
+.cta-glow {
+  box-shadow: 0 0 0 1px rgba(212, 168, 54, 0.3), 0 4px 20px rgba(212, 168, 54, 0.2), 0 8px 40px rgba(212, 168, 54, 0.1);
+}
+.cta-glow:hover {
+  box-shadow: 0 0 0 1px rgba(212, 168, 54, 0.5), 0 4px 30px rgba(212, 168, 54, 0.3), 0 8px 60px rgba(212, 168, 54, 0.15);
+}
+
+/* ─── Stat Number ────────────────────────────────── */
+.stat-number {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+
+/* ─── Scroll fade-in animation ───────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
