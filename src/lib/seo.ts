@@ -19,7 +19,7 @@ export function constructMetadata({
   description,
   locale,
   path = '',
-  image = '/brand/social-preview.png'
+  image = '/brand/social-preview.jpeg'
 }: SeoProps): Metadata {
   const isEn = locale === 'en';
   const siteName = isEn ? 'Hani Alshami' : 'هاني الشامي';
@@ -99,8 +99,8 @@ export function getGlobalMetadata(locale: string): Metadata {
     description,
     metadataBase: new URL(getBaseUrl()),
     icons: {
-      icon: '/brand/logo-icon.png',
-      apple: '/brand/logo-icon.png'
+      icon: '/brand/logo-icon.jpeg',
+      apple: '/brand/logo-icon.jpeg'
     },
     alternates: {
       canonical: url,
@@ -119,7 +119,7 @@ export function getGlobalMetadata(locale: string): Metadata {
       siteName,
       images: [
         {
-          url: `${getBaseUrl()}/brand/social-preview.png`,
+          url: `${getBaseUrl()}/brand/social-preview.jpeg`,
           width: 1200,
           height: 630,
           alt: title
@@ -135,7 +135,7 @@ export function getGlobalMetadata(locale: string): Metadata {
         template: `%s | ${siteName}`,
       },
       description,
-      images: [`${getBaseUrl()}/brand/social-preview.png`]
+      images: [`${getBaseUrl()}/brand/social-preview.jpeg`]
     },
     robots: {
       index: true,

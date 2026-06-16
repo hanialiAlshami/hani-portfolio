@@ -43,7 +43,7 @@ export default async function AdminSettingsPage({ params: { locale }, searchPara
       )}
 
       <form action={updateAction} className="space-y-8 max-w-4xl">
-        <div className="glass p-8 rounded-xl border border-primary/10">
+        <div className="glass p-4 sm:p-6 md:p-8 rounded-xl border border-primary/10">
           <h2 className="text-xl font-bold mb-6 gold-gradient">{isEn ? 'Identity' : 'الهوية'}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
@@ -75,7 +75,7 @@ export default async function AdminSettingsPage({ params: { locale }, searchPara
           </div>
         </div>
 
-        <div className="glass p-8 rounded-xl border border-primary/10">
+        <div className="glass p-4 sm:p-6 md:p-8 rounded-xl border border-primary/10">
           <h2 className="text-xl font-bold mb-6 gold-gradient">{isEn ? 'Hero Content' : 'محتوى البداية'}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 md:col-span-2">
@@ -113,7 +113,7 @@ export default async function AdminSettingsPage({ params: { locale }, searchPara
           </div>
         </div>
 
-        <div className="glass p-8 rounded-xl border border-primary/10">
+        <div className="glass p-4 sm:p-6 md:p-8 rounded-xl border border-primary/10">
           <h2 className="text-xl font-bold mb-6 gold-gradient">{isEn ? 'Contact Information' : 'معلومات التواصل'}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
@@ -141,7 +141,7 @@ export default async function AdminSettingsPage({ params: { locale }, searchPara
           </div>
         </div>
 
-        <div className="glass p-8 rounded-xl border border-primary/10">
+        <div className="glass p-4 sm:p-6 md:p-8 rounded-xl border border-primary/10">
           <h2 className="text-xl font-bold mb-6 gold-gradient">{isEn ? 'About Page Content' : 'محتوى صفحة نبذة عني'}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 md:col-span-2">
@@ -199,7 +199,7 @@ export default async function AdminSettingsPage({ params: { locale }, searchPara
           </div>
         </div>
 
-        <div className="glass p-8 rounded-xl border border-primary/10">
+        <div className="glass p-4 sm:p-6 md:p-8 rounded-xl border border-primary/10">
           <h2 className="text-xl font-bold mb-6 gold-gradient">{isEn ? 'Achievement Records' : 'سجل الإنجازات'}</h2>
           <div className="space-y-6">
             {[1, 2, 3, 4].map((num) => {
@@ -229,7 +229,7 @@ export default async function AdminSettingsPage({ params: { locale }, searchPara
           </div>
         </div>
 
-        <div className="glass p-8 rounded-xl border border-primary/10">
+        <div className="glass p-4 sm:p-6 md:p-8 rounded-xl border border-primary/10">
           <h2 className="text-xl font-bold mb-6 gold-gradient">{isEn ? 'Social Links' : 'روابط التواصل الاجتماعي'}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
@@ -255,7 +255,7 @@ export default async function AdminSettingsPage({ params: { locale }, searchPara
           </div>
         </div>
 
-        <div className="glass p-8 rounded-xl border border-primary/10">
+        <div className="glass p-4 sm:p-6 md:p-8 rounded-xl border border-primary/10">
           <h2 className="text-xl font-bold mb-6 gold-gradient">{isEn ? 'Files / Assets' : 'الملفات والأصول'}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 md:col-span-2">

@@ -16,3 +16,4 @@ public/avatar/*.glb
 scripts/create-admin.mjs
 
 src/components/shared/Avatar3D.tsx
+public/video/

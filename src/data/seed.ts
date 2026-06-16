@@ -27,7 +27,7 @@ export const projects: Project[] = [
     demoVideoUrl: '',
     isFeatured: true,
     categoryIds: ['1', '3'],
-    imageUrl: '',
+    imageUrl: '/brand/social-preview.jpeg',
     order: 1,
   },
   {
@@ -51,7 +51,7 @@ export const projects: Project[] = [
     demoVideoUrl: '',
     isFeatured: true,
     categoryIds: ['2'],
-    imageUrl: '',
+    imageUrl: '/brand/social-preview.jpeg',
     order: 2,
   }
 ];

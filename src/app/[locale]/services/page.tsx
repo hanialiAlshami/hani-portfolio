@@ -32,10 +32,10 @@ export default async function ServicesPage({ params: { locale } }: { params: { l
           : 'حلول تطوير شاملة تركز على الأمان وقابلية التوسع وعائد الاستثمار الملموس — وليس مجرد كتابة الكود.'}
       />
 
-      <div className="container px-6 py-24 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map(service => (
-            <ServiceCard key={service.id} service={service} locale={locale} />
+      <div className="container px-4 sm:px-6 py-16 md:py-24 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
+          {services.map((service, index) => (
+            <ServiceCard key={service.id} service={service} locale={locale} index={index + 1} />
           ))}
         </div>
       </div>

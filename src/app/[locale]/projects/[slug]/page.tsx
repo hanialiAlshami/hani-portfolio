@@ -44,46 +44,42 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
   return (
     <article>
       {/* ── Page Hero ─────────────────────────────── */}
-      <div className="relative py-20 md:py-28 border-b border-white/[0.05] overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(212,168,54,0.1),transparent_70%)]" />
-        <div className="container mx-auto px-6 relative z-10 max-w-5xl">
+      <div className="relative pt-32 pb-20 md:pt-40 md:pb-28 border-b border-white/[0.05] overflow-hidden bg-background">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(212,168,54,0.08),transparent_70%)] pointer-events-none" />
+        <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-7xl">
           <Link
             href={`/${locale}/projects`}
-            className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors mb-8 group"
+            className="inline-flex items-center gap-2 text-xs md:text-sm font-bold tracking-[0.1em] uppercase text-muted-foreground hover:text-primary transition-colors mb-12 md:mb-20 group border border-white/10 hover:border-primary/50 px-6 py-3 rounded-full hover:bg-primary/5"
           >
-            <ArrowLeft className="w-3.5 h-3.5 rtl:rotate-180 group-hover:-translate-x-1 transition-transform" />
-            {isEn ? 'All Projects' : 'كل المشاريع'}
+            <ArrowLeft className="w-4 h-4 rtl:rotate-180 group-hover:-translate-x-1 transition-transform" />
+            {isEn ? 'BACK TO PROJECTS' : 'العودة للمشاريع'}
           </Link>
 
-          <div className="flex flex-wrap gap-2 mb-6">
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${status.bg} ${status.color}`}>
-              {status.label}
-            </span>
-            {project.projectPlatforms?.map(p => (
-              <span key={p} className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs border border-white/10 text-muted-foreground">
-                <Monitor className="w-3 h-3" /> {p}
+          <div className="flex flex-col gap-6 md:gap-10">
+            <div className="flex flex-wrap gap-3">
+              <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border ${status.bg} ${status.color}`}>
+                {status.label}
               </span>
-            ))}
-            {project.projectLanguages?.map(l => (
-              <span key={l} className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs border border-white/10 text-muted-foreground">
-                <Terminal className="w-3 h-3" /> {l}
+              <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-white/10 text-muted-foreground">
+                {Array.isArray(project.categoryIds) && project.categoryIds.length > 0 ? project.categoryIds[0] : 'WEB'}
               </span>
-            ))}
-          </div>
+            </div>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold gold-gradient pb-3 mb-5 leading-tight tracking-tight">
-            {isEn ? project.title.en : project.title.ar}
-          </h1>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed">
-            {isEn ? project.summary.en : project.summary.ar}
-          </p>
+            <h1 className="text-5xl md:text-7xl lg:text-[7rem] font-black text-white opacity-90 tracking-tighter mix-blend-screen uppercase drop-shadow-2xl leading-none">
+              {isEn ? project.title.en : project.title.ar}
+            </h1>
+            
+            <p className="text-lg md:text-2xl text-foreground/70 max-w-3xl font-medium leading-relaxed">
+              {isEn ? project.summary.en : project.summary.ar}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* ── Body ──────────────────────────────────── */}
-      <div className="container px-6 py-20 max-w-5xl mx-auto">
+      <div className="container px-4 sm:px-6 py-12 md:py-24 max-w-7xl mx-auto">
         {/* Hero Image */}
-        <div className="aspect-video w-full rounded-2xl overflow-hidden mb-20 border border-white/[0.07] shadow-[0_20px_80px_rgba(0,0,0,0.6)] relative group">
+        <div className="aspect-[16/9] md:aspect-[21/9] w-full rounded-[2rem] overflow-hidden mb-16 md:mb-32 border border-white/[0.05] shadow-[0_20px_80px_rgba(0,0,0,0.5)] relative group">
           {project.imageUrl ? (
             <Image
               src={project.imageUrl}
@@ -91,12 +87,12 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
               fill
               priority
               sizes="100vw"
-              className="object-cover group-hover:scale-[1.02] transition-transform duration-700"
+              className="object-cover group-hover:scale-[1.03] transition-transform duration-[1.5s]"
             />
           ) : (
             <PlaceholderImage text={isEn ? 'Project Preview' : 'معاينة المشروع'} className="border-0 rounded-none" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/10 to-transparent" />
         </div>
 
         {/* Content + Sidebar */}

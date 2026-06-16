@@ -1,4 +1,4 @@
-import { PageHero } from '@/components/shared/PageHero';
+
 import { ProjectCard } from '@/components/shared/ProjectCard';
 import { getProjects } from '@/lib/data/portfolio';
 import { Metadata } from 'next';
@@ -24,15 +24,22 @@ export default async function ProjectsPage({ params: { locale } }: { params: { l
 
   return (
     <div>
-      <PageHero
-        eyebrow={isEn ? 'Portfolio' : 'المحفظة'}
-        title={isEn ? 'Projects & Case Studies' : 'المشاريع ودراسات الحالة'}
-        subtitle={isEn
-          ? 'A curated showcase of business-grade applications — each designed to solve a real problem, deliver measurable outcomes, and scale.'
-          : 'مجموعة مختارة من التطبيقات على مستوى الأعمال — كل منها مصمم لحل مشكلة حقيقية وتحقيق نتائج قابلة للقياس والتوسع.'}
-      />
+      {/* ── Page Hero ─────────────────────────────── */}
+      <div className="relative pt-32 pb-20 md:pt-40 md:pb-28 border-b border-white/[0.05] overflow-hidden bg-background">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_0%,rgba(212,168,54,0.08),transparent_70%)] pointer-events-none" />
+        <div className="container mx-auto px-4 sm:px-6 relative z-10 max-w-7xl text-center">
+          <h1 className="text-[18vw] md:text-[10vw] font-black leading-none text-white opacity-90 tracking-tighter mix-blend-screen uppercase drop-shadow-2xl mb-6">
+            {isEn ? 'PROJECTS' : 'المشاريع'}
+          </h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base font-medium">
+            {isEn
+              ? 'A curated showcase of business-grade applications — each designed to solve a real problem, deliver measurable outcomes, and scale.'
+              : 'مجموعة مختارة من التطبيقات على مستوى الأعمال — كل منها مصمم لحل مشكلة حقيقية وتحقيق نتائج قابلة للقياس والتوسع.'}
+          </p>
+        </div>
+      </div>
 
-      <div className="container px-6 py-24 max-w-6xl mx-auto">
+      <div className="container px-4 sm:px-6 py-16 md:py-24 max-w-7xl mx-auto">
         {projects.length === 0 ? (
           <div className="text-center py-24 text-muted-foreground">
             <FolderOpen className="w-12 h-12 mx-auto mb-4 opacity-30" />
@@ -40,9 +47,9 @@ export default async function ProjectsPage({ params: { locale } }: { params: { l
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map(project => (
-                <ProjectCard key={project.id} project={project} locale={locale} />
+            <div className="flex flex-col w-full">
+              {projects.map((project, index) => (
+                <ProjectCard key={project.id} project={project} locale={locale} index={index + 1} />
               ))}
             </div>
           </>

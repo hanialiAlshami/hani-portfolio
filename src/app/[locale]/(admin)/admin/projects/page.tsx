@@ -46,53 +46,55 @@ export default async function ProjectsAdminPage({ params: { locale }, searchPara
         </AdminNotice>
       )}
 
-      <div className="glass rounded-xl border border-primary/20 overflow-hidden overflow-x-auto">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-primary/5 text-primary uppercase border-b border-primary/20 whitespace-nowrap">
-            <tr>
-              <th className="px-6 py-4">{isEn ? 'Title' : 'العنوان'}</th>
-              <th className="px-6 py-4">{isEn ? 'Slug' : 'الرابط'}</th>
-              <th className="px-6 py-4">{isEn ? 'Featured' : 'مميز'}</th>
-              <th className="px-6 py-4">{isEn ? 'Status' : 'الحالة'}</th>
-              <th className="px-6 py-4">{isEn ? 'Actions' : 'الإجراءات'}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {projects.map((project: any) => (
-              <tr key={project.id} className="border-b border-primary/10 hover:bg-primary/5">
-                <td className="px-6 py-4 font-medium">{isEn ? project.title_en : project.title_ar}</td>
-                <td className="px-6 py-4 text-muted-foreground">{project.slug}</td>
-                <td className="px-6 py-4 text-muted-foreground">{project.is_featured ? 'Yes' : 'No'}</td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded-full text-xs ${project.is_published ? 'bg-green-500/20 text-green-500' : 'bg-destructive/20 text-destructive'}`}>
-                    {project.is_published ? (isEn ? 'Active' : 'نشط') : (isEn ? 'Inactive' : 'غير نشط')}
-                  </span>
-                </td>
-                <td className="px-6 py-4 flex gap-2">
-                  <Link href={`/${locale}/admin/projects/${project.id}/edit`}>
-                    <Button variant="outline" size="sm">{isEn ? 'Edit' : 'تعديل'}</Button>
-                  </Link>
-                  <DeleteButton 
-                    id={project.id} 
-                    onDelete={async (id) => {
-                      "use server";
-                      await deleteProjectAction(id, locale);
-                    }} 
-                    confirmText={isEn ? 'Are you sure you want to delete this project?' : 'هل أنت متأكد من حذف هذا المشروع؟'} 
-                    buttonText={isEn ? 'Delete' : 'حذف'} 
-                  />
-                </td>
-              </tr>
-            ))}
-            {projects.length === 0 && (
+      <div className="glass rounded-xl border border-primary/20 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-primary/5 text-primary uppercase border-b border-primary/20 whitespace-nowrap">
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
-                  {isEn ? 'No projects found.' : 'لم يتم العثور على مشاريع.'}
-                </td>
+                <th className="px-6 py-4">{isEn ? 'Title' : 'العنوان'}</th>
+                <th className="px-6 py-4">{isEn ? 'Slug' : 'الرابط'}</th>
+                <th className="px-6 py-4">{isEn ? 'Featured' : 'مميز'}</th>
+                <th className="px-6 py-4">{isEn ? 'Status' : 'الحالة'}</th>
+                <th className="px-6 py-4">{isEn ? 'Actions' : 'الإجراءات'}</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {projects.map((project: any) => (
+                <tr key={project.id} className="border-b border-primary/10 hover:bg-primary/5">
+                  <td className="px-6 py-4 font-medium whitespace-nowrap">{isEn ? project.title_en : project.title_ar}</td>
+                  <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">{project.slug}</td>
+                  <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">{project.is_featured ? 'Yes' : 'No'}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 rounded-full text-xs ${project.is_published ? 'bg-green-500/20 text-green-500' : 'bg-destructive/20 text-destructive'}`}>
+                      {project.is_published ? (isEn ? 'Active' : 'نشط') : (isEn ? 'Inactive' : 'غير نشط')}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 flex gap-2 whitespace-nowrap">
+                    <Link href={`/${locale}/admin/projects/${project.id}/edit`}>
+                      <Button variant="outline" size="sm">{isEn ? 'Edit' : 'تعديل'}</Button>
+                    </Link>
+                    <DeleteButton 
+                      id={project.id} 
+                      onDelete={async (id) => {
+                        "use server";
+                        await deleteProjectAction(id, locale);
+                      }} 
+                      confirmText={isEn ? 'Are you sure you want to delete this project?' : 'هل أنت متأكد من حذف هذا المشروع؟'} 
+                      buttonText={isEn ? 'Delete' : 'حذف'} 
+                    />
+                  </td>
+                </tr>
+              ))}
+              {projects.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
+                    {isEn ? 'No projects found.' : 'لم يتم العثور على مشاريع.'}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
