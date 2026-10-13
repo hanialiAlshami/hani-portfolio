@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/Button';
 import Image from 'next/image';
 
 import { ProjectCard } from '@/components/shared/ProjectCard';
+import { WarpedProjectsCarousel } from '@/components/shared/WarpedProjectsCarousel';
 import { ServiceCard } from '@/components/shared/ServiceCard';
 import { SkillCard } from '@/components/shared/SkillCard';
 import { getProjects, getServices, getSkills } from '@/lib/data/portfolio';
@@ -24,7 +25,7 @@ export default async function Home({ params: { locale } }: { params: { locale: s
   const allProjects = await getProjects();
   const allServices = await getServices();
   const allSkills = await getSkills();
-  const featuredProjects = allProjects.filter(p => p.isFeatured).slice(0, 4);
+  const featuredProjects = allProjects.filter(p => p.isFeatured).slice(0, 6);
   const featuredServices = allServices.slice(0, 3);
   const featuredSkills = allSkills.slice(0, 6);
   const settings = await getSiteSettings();
@@ -40,7 +41,7 @@ export default async function Home({ params: { locale } }: { params: { locale: s
       <section className="relative min-h-[100svh] md:min-h-[92vh] w-full flex items-center justify-center overflow-hidden bg-background">
         {/* Mesh background */}
         <div className="absolute inset-0 hero-mesh" />
-        
+
         {/* Background Ambient Glow */}
         <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full bg-primary/10 blur-[80px] md:blur-[150px] pointer-events-none" />
 
@@ -53,9 +54,9 @@ export default async function Home({ params: { locale } }: { params: { locale: s
 
         {/* Foreground Content (Split Composition) */}
         <div className="container relative z-20 px-4 sm:px-6 w-full h-full flex flex-col justify-start md:justify-end pb-12 md:pb-32 pt-20 sm:pt-24 lg:pt-20 min-h-[100svh] md:min-h-[92vh]">
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 lg:gap-4 items-end w-full">
-            
+
             {/* Left/Bottom Intro Block */}
             <div className="lg:col-span-5 flex flex-col gap-5 md:gap-6 text-left rtl:text-right items-start z-20">
               {/* Availability Badge */}
@@ -68,7 +69,7 @@ export default async function Home({ params: { locale } }: { params: { locale: s
                   {isEn ? 'Available for new projects' : 'متاح لمشاريع جديدة'}
                 </span>
               </div>
-              
+
               <div className="animate-fade-in-up delay-200">
                 <h2 className="text-3xl md:text-4xl font-extrabold text-foreground mb-4 tracking-tight leading-snug">
                   {isEn ? (settings.jobTitle?.en || 'Full Stack Web Developer') : (settings.jobTitle?.ar || 'مطور ويب Full Stack')}
@@ -115,13 +116,13 @@ export default async function Home({ params: { locale } }: { params: { locale: s
               {(settings.social?.github || settings.social?.linkedin || settings.whatsapp) && (
                 <div className="animate-fade-in-up delay-400 flex items-center gap-5 md:gap-7 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground/50 w-full sm:w-auto justify-center sm:justify-start lg:justify-end pb-4 md:pb-0">
                   {settings.social?.github && (
-                     <a href={settings.social.github} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors py-2">GitHub</a>
+                    <a href={settings.social.github} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors py-2">GitHub</a>
                   )}
                   {settings.social?.linkedin && (
-                     <a href={settings.social.linkedin} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors py-2">LinkedIn</a>
+                    <a href={settings.social.linkedin} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors py-2">LinkedIn</a>
                   )}
                   {settings.whatsapp && (
-                     <a href={settings.whatsapp} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors py-2">WhatsApp</a>
+                    <a href={settings.whatsapp} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors py-2">WhatsApp</a>
                   )}
                 </div>
               )}
@@ -148,7 +149,7 @@ export default async function Home({ params: { locale } }: { params: { locale: s
       {/* ── Services ──────────────────────────────────── */}
       <section className="py-24 md:py-32 bg-background relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_0%,rgba(212,168,54,0.03),transparent)] pointer-events-none" />
-        
+
         <div className="container px-4 sm:px-6 relative z-10 max-w-7xl mx-auto">
           {/* Huge Cinematic Title */}
           <div className="text-center mb-16 md:mb-24">
@@ -182,11 +183,11 @@ export default async function Home({ params: { locale } }: { params: { locale: s
       {/* ── Projects ──────────────────────────────────── */}
       <section className="py-24 md:py-32 relative overflow-hidden bg-background">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_100%,rgba(212,168,54,0.03),transparent)] pointer-events-none" />
-        
+
         <div className="container px-4 sm:px-6 relative z-10 max-w-7xl mx-auto">
           {/* Huge Cinematic Title */}
-          <div className="text-center mb-16 md:mb-24">
-            <h2 className="text-[18vw] md:text-[10vw] font-black leading-none text-white opacity-90 tracking-tighter mix-blend-screen uppercase drop-shadow-2xl mb-6">
+          <div className="text-center mb-8 md:mb-10">
+            <h2 className="text-[18vw] md:text-[10vw] font-black leading-none text-white opacity-90 tracking-tighter mix-blend-screen uppercase drop-shadow-2xl mb-4 md:mb-6">
               {isEn ? 'PROJECTS' : 'المشاريع'}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base font-medium">
@@ -195,14 +196,15 @@ export default async function Home({ params: { locale } }: { params: { locale: s
                 : 'مشاريع حقيقية حققت نتائج قابلة للقياس للعملاء — من أنظمة الأعمال إلى المنتجات الاستهلاكية.'}
             </p>
           </div>
+        </div>
 
-          <div className="flex flex-col w-full">
-            {featuredProjects.map((project, idx) => (
-              <ProjectCard key={project.id} project={project} locale={locale} index={idx + 1} />
-            ))}
-          </div>
+        {/* ── Immersive Full-Bleed 3D Carousel ──────────────────── */}
+        <div className="w-full relative z-10 my-4 md:my-8 overflow-hidden">
+          <WarpedProjectsCarousel projects={featuredProjects} locale={locale} />
+        </div>
 
-          <div className="mt-8 text-center">
+        <div className="container px-4 sm:px-6 relative z-10 max-w-7xl mx-auto">
+          <div className="text-center">
             <Link href={`/${locale}/projects`}>
               <button className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-primary/80 hover:text-primary transition-colors group px-8 py-3.5 rounded-full bg-white/[0.02] hover:bg-primary/10 border border-white/5 hover:border-primary/30 backdrop-blur-sm">
                 {isEn ? 'View All Projects' : 'عرض كل المشاريع'}
@@ -262,7 +264,7 @@ export default async function Home({ params: { locale } }: { params: { locale: s
               </div>
             </div>
           </div>
-          
+
           {/* Row 3 (Left, hidden on mobile for better compactness) */}
           <div className="hidden md:flex overflow-hidden">
             <div className="flex animate-marquee hover:[animation-play-state:paused] whitespace-nowrap">
@@ -295,7 +297,7 @@ export default async function Home({ params: { locale } }: { params: { locale: s
       <section className="py-24 md:py-32 relative overflow-hidden bg-background">
         {/* Background Ambient Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_80%_at_50%_50%,rgba(212,168,54,0.04),transparent)] pointer-events-none" />
-        
+
         {/* Decorative Floating Elements (CSS/Tailwind only) */}
         <div className="hidden md:block absolute top-[15%] left-[10%] w-24 h-24 rounded-full bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 blur-[1px] animate-pulse pointer-events-none" />
         <div className="hidden md:block absolute top-[25%] right-[15%] w-20 h-20 rotate-45 bg-white/[0.02] border border-white/[0.08] backdrop-blur-xl rounded-2xl shadow-[0_0_30px_rgba(212,168,54,0.05)] pointer-events-none" />
@@ -303,7 +305,7 @@ export default async function Home({ params: { locale } }: { params: { locale: s
         <div className="hidden md:block absolute bottom-[15%] right-[10%] w-32 h-32 rounded-full bg-[radial-gradient(circle_at_30%_30%,rgba(212,168,54,0.1),transparent)] border border-primary/10 blur-[2px] animate-pulse delay-700 pointer-events-none" />
 
         <div className="container px-4 sm:px-6 text-center relative z-10 max-w-5xl mx-auto flex flex-col items-center">
-          
+
           {/* Huge Cinematic Title */}
           <h2 className="text-[17vw] md:text-[10vw] font-black leading-none text-white opacity-90 tracking-tighter mix-blend-screen uppercase drop-shadow-2xl mb-8 md:mb-12 animate-fade-in-up">
             {isEn ? 'ABOUT ME' : 'من أنا'}

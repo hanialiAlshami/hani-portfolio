@@ -1,4 +1,4 @@
-﻿.env.local
+.env.local
 .env*.local
 .next/
 .vercel/
@@ -17,3 +17,7 @@ scripts/create-admin.mjs
 
 src/components/shared/Avatar3D.tsx
 public/video/
+*.tsbuildinfo
+*.zip
+*.mp4
+

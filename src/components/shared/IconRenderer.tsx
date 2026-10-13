@@ -1,3 +1,6 @@
+"use client";
+
+import * as React from "react";
 import * as Icons from "lucide-react";
 import { LucideProps } from "lucide-react";
 
@@ -39,7 +42,8 @@ const iconMap: Record<string, any> = {
 
 export function IconRenderer({ iconName, className, ...props }: { iconName?: string | null, className?: string } & LucideProps) {
   if (!iconName) {
-    return <Icons.Box className={className} {...props} />;
+    const Fallback = Icons.Box || Icons.HelpCircle;
+    return Fallback ? <Fallback className={className} {...props} /> : null;
   }
 
   // Handle URL icons (Supabase or other external)
@@ -63,13 +67,15 @@ export function IconRenderer({ iconName, className, ...props }: { iconName?: str
   // Try finding exact match in lucide-react by converting to PascalCase
   if (!IconComponent) {
     const pascalCased = normalized.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
-    IconComponent = (Icons as any)[pascalCased];
+    IconComponent = (Icons as any)?.[pascalCased];
   }
 
   // Fallback neutral icon
-  if (!IconComponent) {
-    IconComponent = Icons.Box; // neutral fallback
+  if (!IconComponent || (typeof IconComponent !== 'function' && typeof IconComponent !== 'object')) {
+    IconComponent = Icons.Box || Icons.HelpCircle;
   }
+
+  if (!IconComponent) return null;
 
   return <IconComponent className={className} {...props} />;
 }

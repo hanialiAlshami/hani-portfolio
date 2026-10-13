@@ -6,6 +6,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ExternalLink, Github, Lock, PlayCircle, Layers, Wrench, Monitor, Terminal, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { HoverExpand, type HoverExpandItem } from '@/components/unlumen-ui/hover-expand';
 
 import { constructMetadata } from '@/lib/seo';
 
@@ -40,6 +41,33 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
     in_progress: { label: isEn ? 'In Progress' : 'قيد التطوير', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20' },
   };
   const status = statusConfig[project.projectStatus] ?? statusConfig.local_demo;
+
+  const galleryItems: HoverExpandItem[] = (project.gallery && project.gallery.length > 0)
+    ? project.gallery.map((img, idx) => {
+        const altText = (isEn ? img.alt?.en : img.alt?.ar)?.trim();
+        const captionText = (isEn ? img.caption?.en : img.caption?.ar)?.trim();
+        const label = altText || captionText || `${isEn ? 'Preview' : 'معاينة'} ${String(idx + 1).padStart(2, '0')}`;
+        const description = (captionText && captionText !== label) ? captionText : undefined;
+
+        return {
+          label,
+          sublabel: isEn ? 'Showcase' : 'معاينة',
+          image: img.imageUrl,
+          imageAlt: altText || (isEn ? project.title.en : project.title.ar),
+          description,
+        };
+      })
+    : project.imageUrl
+    ? [
+        {
+          label: isEn ? project.title.en : project.title.ar,
+          sublabel: isEn ? 'Overview' : 'نظرة عامة',
+          image: project.imageUrl,
+          imageAlt: isEn ? project.title.en : project.title.ar,
+          description: isEn ? project.summary.en : project.summary.ar,
+        },
+      ]
+    : [];
 
   return (
     <article>
@@ -287,36 +315,22 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
         </div>
 
         {/* Gallery */}
-        {project.gallery && project.gallery.length > 0 && (
-          <div className="mt-24 pt-16 border-t border-white/[0.05]">
-            <div className="flex items-center gap-3 mb-12">
-              <span className="h-px w-5 bg-primary/50" />
-              <span className="text-xs font-bold tracking-[0.18em] uppercase text-primary/70">
-                {isEn ? 'Project Gallery' : 'معرض المشروع'}
-              </span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {project.gallery.map((img) => (
-                <div key={img.id} className="group relative rounded-2xl overflow-hidden border border-white/[0.07] shadow-xl">
-                  <div className="aspect-[4/3] overflow-hidden relative">
-                    <Image
-                      src={img.imageUrl}
-                      alt={isEn ? img.alt?.en || 'Screenshot' : img.alt?.ar || 'لقطة شاشة'}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                    />
-                  </div>
-                  {(img.caption?.en || img.caption?.ar) && (
-                    <div className="p-4 bg-black/60 backdrop-blur border-t border-white/[0.06]">
-                      <p className="text-sm text-foreground/70 text-center">{isEn ? img.caption.en : img.caption.ar}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+        <section aria-labelledby="project-gallery-heading" className="mt-24 pt-16 border-t border-white/[0.05]">
+          <div className="flex items-center gap-3 mb-10">
+            <span className="h-px w-5 bg-primary/50" />
+            <h2 id="project-gallery-heading" className="text-xs font-bold tracking-[0.18em] uppercase text-primary/70">
+              {isEn ? 'Project Gallery' : 'معرض المشروع'}
+            </h2>
           </div>
-        )}
+
+          <HoverExpand
+            items={galleryItems}
+            collapsedHeight={68}
+            expandedHeight={580}
+            mobileExpandedHeight={260}
+            emptyFallbackText={isEn ? 'No gallery previews available for this project yet.' : 'لا توجد لقطات متاحة في المعرض لهذا المشروع حالياً.'}
+          />
+        </section>
 
         {/* Bottom CTA */}
         <div className="mt-24 pt-16 border-t border-white/[0.05] text-center">
