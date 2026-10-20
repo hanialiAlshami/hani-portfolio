@@ -1,8 +1,12 @@
 import { Button } from '@/components/ui/Button';
-import Image from 'next/image';
+import { LanyardCard } from '@/components/lanyard/LanyardCard';
 
+import dynamic from 'next/dynamic';
 import { ProjectCard } from '@/components/shared/ProjectCard';
-import { WarpedProjectsCarousel } from '@/components/shared/WarpedProjectsCarousel';
+const WarpedProjectsCarousel = dynamic(
+  () => import('@/components/shared/WarpedProjectsCarousel').then(mod => mod.WarpedProjectsCarousel)
+);
+import { DeferredRender } from '@/components/shared/DeferredRender';
 import { ServiceCard } from '@/components/shared/ServiceCard';
 import { SkillCard } from '@/components/shared/SkillCard';
 import { getProjects, getServices, getSkills } from '@/lib/data/portfolio';
@@ -11,6 +15,11 @@ import { getSiteSettings } from '@/lib/data/site-settings';
 import { ArrowRight, CheckCircle2, Shield, Zap, Code2 } from 'lucide-react';
 import { Metadata } from 'next';
 import { constructMetadata } from '@/lib/seo';
+import { setRequestLocale } from 'next-intl/server';
+
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'ar' }];
+}
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
   return constructMetadata({
@@ -21,14 +30,23 @@ export function generateMetadata({ params: { locale } }: { params: { locale: str
 }
 
 export default async function Home({ params: { locale } }: { params: { locale: string } }) {
+  setRequestLocale(locale);
   const isEn = locale === 'en';
-  const allProjects = await getProjects();
-  const allServices = await getServices();
-  const allSkills = await getSkills();
+  const [allProjects, allServices, allSkills, settings] = await Promise.all([
+    getProjects(),
+    getServices(),
+    getSkills(),
+    getSiteSettings(),
+  ]);
   const featuredProjects = allProjects.filter(p => p.isFeatured).slice(0, 6);
+  const carouselProjects = featuredProjects.map(p => ({
+    id: p.id,
+    title: p.title,
+    slug: p.slug,
+    imageUrl: p.imageUrl,
+  }));
   const featuredServices = allServices.slice(0, 3);
   const featuredSkills = allSkills.slice(0, 6);
-  const settings = await getSiteSettings();
 
   const trustPoints = isEn
     ? ['Clean, maintainable code architecture', 'Security-first development approach', 'On-time delivery track record', 'Business-focused, not just technical']
@@ -52,13 +70,13 @@ export default async function Home({ params: { locale } }: { params: { locale: s
           </h1>
         </div>
 
-        {/* Foreground Content (Split Composition) */}
-        <div className="container relative z-20 px-4 sm:px-6 w-full h-full flex flex-col justify-start md:justify-end pb-12 md:pb-32 pt-20 sm:pt-24 lg:pt-20 min-h-[100svh] md:min-h-[92vh]">
+        {/* Foreground Content (Split Composition: card + copy) */}
+        <div className="container relative z-20 px-4 sm:px-6 w-full h-full flex flex-col justify-center lg:justify-start pb-14 md:pb-20 pt-24 sm:pt-28 lg:pt-24 min-h-[100svh] md:min-h-[92vh]">
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 lg:gap-4 items-end w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-12 lg:gap-10 items-center w-full">
 
-            {/* Left/Bottom Intro Block */}
-            <div className="lg:col-span-5 flex flex-col gap-5 md:gap-6 text-left rtl:text-right items-start z-20">
+            {/* ── Text Column (mobile: first · desktop: beside the card) ── */}
+            <div className="lg:col-span-7 flex flex-col gap-6 md:gap-8 text-left rtl:text-right items-start z-20">
               {/* Availability Badge */}
               <div className="animate-fade-in-up delay-100 inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-primary/30 bg-primary/10 backdrop-blur-md w-fit">
                 <span className="relative flex h-2 w-2">
@@ -85,47 +103,53 @@ export default async function Home({ params: { locale } }: { params: { locale: s
                   <span className="px-3 py-1.5 rounded-md bg-white/[0.02] border border-white/[0.05] backdrop-blur-sm">Supabase</span>
                 </div>
               </div>
-            </div>
 
-            {/* Central Brand Visual (Mobile: Stacks in grid, Desktop: Absolute Center) */}
-            <div className="lg:col-span-2 flex justify-center items-center z-10 animate-fade-in-up md:absolute md:top-[48%] md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 pointer-events-none py-6 md:py-0 w-full md:w-auto">
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 rounded-full border border-primary/20 shadow-[0_0_80px_rgba(212,168,54,0.15)] md:shadow-[0_0_100px_rgba(212,168,54,0.25)] bg-black/40 backdrop-blur-md flex items-center justify-center overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/15 to-transparent opacity-60" />
-                <Image src="/brand/logo-icon.jpeg" alt="Hani Alshami" fill className="object-cover opacity-90 p-2 md:p-3" priority />
-                <div className="absolute inset-0 rounded-full border border-white/5" />
-              </div>
-            </div>
-
-            {/* Right/Bottom CTAs & Socials */}
-            <div className="lg:col-span-5 flex flex-col items-start lg:items-end gap-8 lg:text-right rtl:lg:text-left w-full mt-2 md:mt-8 lg:mt-0 z-20">
+              {/* CTAs */}
               <div className="animate-fade-in-up delay-300 flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                <Link href={`/${locale}/contact`} className="w-full sm:w-auto">
-                  <button className="group w-full sm:w-auto relative inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground font-bold text-sm md:text-base px-8 py-4 md:py-4 rounded-full cta-glow transition-all duration-300 hover:scale-[1.03]">
-                    {isEn ? (settings.primaryCta?.en || 'Start a Project') : (settings.primaryCta?.ar || 'ابدأ مشروعاً')}
-                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-300" />
-                  </button>
+                <Link
+                  href={`/${locale}/contact`}
+                  className="group w-full sm:w-auto relative inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground font-bold text-sm md:text-base px-8 py-4 md:py-4 rounded-full cta-glow transition-all duration-300 hover:scale-[1.03]"
+                >
+                  {isEn ? (settings.primaryCta?.en || 'Start a Project') : (settings.primaryCta?.ar || 'ابدأ مشروعاً')}
+                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-300" />
                 </Link>
-                <Link href={`/${locale}/projects`} className="w-full sm:w-auto">
-                  <button className="w-full sm:w-auto inline-flex items-center justify-center gap-3 border border-white/10 hover:border-primary/40 bg-white/[0.02] hover:bg-primary/5 text-foreground/80 hover:text-foreground font-bold text-sm md:text-base px-8 py-4 md:py-4 rounded-full transition-all duration-300 backdrop-blur-sm">
-                    {isEn ? (settings.secondaryCta?.en || 'View My Work') : (settings.secondaryCta?.ar || 'شاهد أعمالي')}
-                  </button>
+                <Link
+                  href={`/${locale}/projects`}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 border border-white/10 hover:border-primary/40 bg-white/[0.02] hover:bg-primary/5 text-foreground/80 hover:text-foreground font-bold text-sm md:text-base px-8 py-4 md:py-4 rounded-full transition-all duration-300 backdrop-blur-sm"
+                >
+                  {isEn ? (settings.secondaryCta?.en || 'View My Work') : (settings.secondaryCta?.ar || 'شاهد أعمالي')}
                 </Link>
               </div>
 
               {/* Social/Identity Block */}
               {(settings.social?.github || settings.social?.linkedin || settings.whatsapp) && (
-                <div className="animate-fade-in-up delay-400 flex items-center gap-5 md:gap-7 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground/50 w-full sm:w-auto justify-center sm:justify-start lg:justify-end pb-4 md:pb-0">
+                <div className="animate-fade-in-up delay-400 flex items-center gap-3 md:gap-7 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-muted-foreground/50 w-full sm:w-auto justify-start pb-4 md:pb-0">
                   {settings.social?.github && (
-                    <a href={settings.social.github} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors py-2">GitHub</a>
+                    <a href={settings.social.github} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors inline-flex items-center justify-center min-h-[32px] px-2 py-1">GitHub</a>
                   )}
                   {settings.social?.linkedin && (
-                    <a href={settings.social.linkedin} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors py-2">LinkedIn</a>
+                    <a href={settings.social.linkedin} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors inline-flex items-center justify-center min-h-[32px] px-2 py-1">LinkedIn</a>
                   )}
                   {settings.whatsapp && (
-                    <a href={settings.whatsapp} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors py-2">WhatsApp</a>
+                    <a 
+                      href={settings.whatsapp.startsWith('http') ? settings.whatsapp : `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="hover:text-primary transition-colors inline-flex items-center justify-center min-h-[32px] px-2 py-1"
+                      aria-label="WhatsApp"
+                    >
+                      WhatsApp
+                    </a>
                   )}
                 </div>
               )}
+            </div>
+
+            {/* ── Interactive Lanyard Card (mobile: below the text · desktop: strap starts at the navbar) ── */}
+            <div className="lg:col-span-5 w-full flex justify-center -mt-8 md:-mt-10 lg:-mt-24">
+              <div className="w-full max-w-[400px] h-[320px] sm:h-[380px] lg:h-[min(820px,calc(100svh-5.5rem))]">
+                <LanyardCard locale={locale} />
+              </div>
             </div>
 
           </div>
@@ -170,11 +194,12 @@ export default async function Home({ params: { locale } }: { params: { locale: s
           </div>
 
           <div className="mt-12 text-center">
-            <Link href={`/${locale}/services`}>
-              <button className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-primary/80 hover:text-primary transition-colors group px-8 py-3.5 rounded-full bg-white/[0.02] hover:bg-primary/10 border border-white/5 hover:border-primary/30 backdrop-blur-sm">
-                {isEn ? 'View All Services' : 'عرض كل الخدمات'}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-200" />
-              </button>
+            <Link
+              href={`/${locale}/services`}
+              className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-primary/80 hover:text-primary transition-colors group px-8 py-3.5 rounded-full bg-white/[0.02] hover:bg-primary/10 border border-white/5 hover:border-primary/30 backdrop-blur-sm"
+            >
+              {isEn ? 'View All Services' : 'عرض كل الخدمات'}
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-200" />
             </Link>
           </div>
         </div>
@@ -200,16 +225,19 @@ export default async function Home({ params: { locale } }: { params: { locale: s
 
         {/* ── Immersive Full-Bleed 3D Carousel ──────────────────── */}
         <div className="w-full relative z-10 my-4 md:my-8 overflow-hidden">
-          <WarpedProjectsCarousel projects={featuredProjects} locale={locale} />
+          <DeferredRender minHeight="clamp(460px, 54vh, 600px)">
+            <WarpedProjectsCarousel projects={carouselProjects} locale={locale} />
+          </DeferredRender>
         </div>
 
         <div className="container px-4 sm:px-6 relative z-10 max-w-7xl mx-auto">
           <div className="text-center">
-            <Link href={`/${locale}/projects`}>
-              <button className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-primary/80 hover:text-primary transition-colors group px-8 py-3.5 rounded-full bg-white/[0.02] hover:bg-primary/10 border border-white/5 hover:border-primary/30 backdrop-blur-sm">
-                {isEn ? 'View All Projects' : 'عرض كل المشاريع'}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-200" />
-              </button>
+            <Link
+              href={`/${locale}/projects`}
+              className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-primary/80 hover:text-primary transition-colors group px-8 py-3.5 rounded-full bg-white/[0.02] hover:bg-primary/10 border border-white/5 hover:border-primary/30 backdrop-blur-sm"
+            >
+              {isEn ? 'View All Projects' : 'عرض كل المشاريع'}
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-200" />
             </Link>
           </div>
         </div>
@@ -284,11 +312,12 @@ export default async function Home({ params: { locale } }: { params: { locale: s
 
         {/* CTA Link */}
         <div className="text-center mt-16 md:mt-24 relative z-10">
-          <Link href={`/${locale}/skills`}>
-            <button className="inline-flex items-center gap-2 text-sm font-semibold text-primary/80 hover:text-primary transition-colors group px-8 py-3.5 rounded-full bg-white/[0.02] hover:bg-primary/10 border border-white/5 hover:border-primary/30 backdrop-blur-sm">
-              {isEn ? 'View All Skills' : 'عرض كل المهارات'}
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-200" />
-            </button>
+          <Link
+            href={`/${locale}/skills`}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary/80 hover:text-primary transition-colors group px-8 py-3.5 rounded-full bg-white/[0.02] hover:bg-primary/10 border border-white/5 hover:border-primary/30 backdrop-blur-sm"
+          >
+            {isEn ? 'View All Skills' : 'عرض كل المهارات'}
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-200" />
           </Link>
         </div>
       </section>
@@ -323,11 +352,12 @@ export default async function Home({ params: { locale } }: { params: { locale: s
 
           {/* CTA Button */}
           <div className="animate-fade-in-up delay-300 w-full sm:w-auto">
-            <Link href={`/${locale}/about`} className="w-full sm:w-auto inline-block">
-              <button className="group w-full sm:w-auto relative inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground font-bold text-sm md:text-base px-10 py-4 md:py-5 rounded-full cta-glow transition-all duration-300 hover:scale-[1.03]">
-                {isEn ? 'More About Me' : 'المزيد عني'}
-                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-300" />
-              </button>
+            <Link
+              href={`/${locale}/about`}
+              className="group w-full sm:w-auto relative inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground font-bold text-sm md:text-base px-10 py-4 md:py-5 rounded-full cta-glow transition-all duration-300 hover:scale-[1.03]"
+            >
+              {isEn ? 'More About Me' : 'المزيد عني'}
+              <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1 transition-transform duration-300" />
             </Link>
           </div>
 

@@ -1,4 +1,5 @@
-import { createClient } from '../supabase/server';
+import { supabase } from '../supabase/client';
+import { unstable_cache } from 'next/cache';
 import { SiteSettings } from '@/types';
 
 const defaultFallback: SiteSettings = {
@@ -26,8 +27,7 @@ function optionalText(value: unknown) {
   return typeof value === 'string' && value.trim() ? value : undefined;
 }
 
-export async function getSiteSettings(): Promise<SiteSettings> {
-  const supabase = createClient();
+async function fetchSiteSettingsRaw(): Promise<SiteSettings> {
   if (supabase) {
     try {
       const { data, error } = await supabase
@@ -172,3 +172,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   }
   return defaultFallback;
 }
+
+export const getSiteSettings = unstable_cache(
+  fetchSiteSettingsRaw,
+  ['portfolio-site-settings-cache'],
+  { revalidate: 3600, tags: ['site-settings', 'settings'] }
+);

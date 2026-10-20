@@ -7,19 +7,25 @@ import { getSiteSettings } from '@/lib/data/site-settings';
 import { IconRenderer } from '@/components/shared/IconRenderer';
 
 import { constructMetadata } from '@/lib/seo';
+import { setRequestLocale } from 'next-intl/server';
+
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'ar' }];
+}
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
   return constructMetadata({
-    title: locale === 'en' ? 'About Me' : 'نبذة عني',
+    title: locale === 'en' ? 'About — Full Stack Web Developer' : 'نبذة عني — مبرمج ومطور ويب متكامل',
     description: locale === 'en'
-      ? 'Learn more about my professional journey and development values.'
-      : 'تعرف أكثر على رحلتي المهنية وقيمي في التطوير.',
+      ? 'Who I am, how I work, and the engineering principles behind every website, store, and business system I build.'
+      : 'من أنا، وكيف أعمل، والمبادئ الهندسية التي أبني بها كل موقع ومتجر ونظام إدارة.',
     locale,
     path: '/about',
   });
 }
 
 export default async function AboutPage({ params: { locale } }: { params: { locale: string } }) {
+  setRequestLocale(locale);
   const isEn = locale === 'en';
   const settings = await getSiteSettings();
 

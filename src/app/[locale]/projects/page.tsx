@@ -6,19 +6,25 @@ import Link from 'next/link';
 import { ArrowRight, FolderOpen } from 'lucide-react';
 
 import { constructMetadata } from '@/lib/seo';
+import { setRequestLocale } from 'next-intl/server';
+
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'ar' }];
+}
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
   return constructMetadata({
-    title: locale === 'en' ? 'Projects' : 'المشاريع',
+    title: locale === 'en' ? 'Portfolio — Websites, Stores & Systems' : 'معرض الأعمال — مواقع ومتاجر وأنظمة',
     description: locale === 'en'
-      ? 'Explore case studies of full-stack web applications built by Hani Alshami.'
-      : 'استكشف دراسات الحالة لتطبيقات الويب الشاملة التي بناها هاني الشامي.',
+      ? 'Real websites, e-commerce stores, admin dashboards, and business systems built with Laravel, Next.js, and Supabase — with outcomes and technical details.'
+      : 'مواقع إلكترونية ومتاجر ولوحات تحكم وأنظمة أعمال حقيقية مبنية بـ Laravel وNext.js وSupabase — مع النتائج والتفاصيل التقنية.',
     locale,
     path: '/projects',
   });
 }
 
 export default async function ProjectsPage({ params: { locale } }: { params: { locale: string } }) {
+  setRequestLocale(locale);
   const isEn = locale === 'en';
   const projects = await getProjects();
 

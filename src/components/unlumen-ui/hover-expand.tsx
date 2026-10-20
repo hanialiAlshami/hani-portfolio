@@ -163,6 +163,8 @@ export function HoverExpand({
                 "group relative w-full overflow-hidden cursor-pointer transition-colors duration-200 outline-none",
                 "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset focus-visible:z-20"
               )}
+              initial={false}
+              style={{ height: collapsedHeight }}
               animate={{
                 height: itemExpanded ? effectiveExpandedHeight : collapsedHeight,
                 opacity: isDimmed ? 0.42 : 1,

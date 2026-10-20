@@ -35,7 +35,9 @@ export async function Footer({ locale }: { locale: string }) {
 
   const githubUrl = settings.social?.github;
   const linkedinUrl = settings.social?.linkedin;
-  const whatsappUrl = settings.whatsapp ? `https://wa.me/${settings.whatsapp.replace(/\+/g, '')}` : undefined;
+  const whatsappUrl = settings.whatsapp 
+    ? (settings.whatsapp.startsWith('http') ? settings.whatsapp : `https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}`) 
+    : undefined;
 
   return (
     <footer className="border-t border-white/10 bg-black/50 backdrop-blur-md">
@@ -109,7 +111,7 @@ export async function Footer({ locale }: { locale: string }) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-[#d4af37] transition-colors duration-200 tracking-wide"
+                className="text-sm font-medium text-muted-foreground hover:text-[#d4af37] transition-colors duration-200 tracking-wide inline-flex items-center min-h-[36px] py-1 px-1.5"
               >
                 {link.label}
               </Link>
@@ -129,7 +131,7 @@ export async function Footer({ locale }: { locale: string }) {
             </Link>
             {isEn ? '. All rights reserved.' : '. جميع الحقوق محفوظة.'}
           </p>
-          <p className="tracking-wide text-xs text-muted-foreground/60">{isEn ? 'Built with precision.' : 'مبني بدقة.'}</p>
+          <p className="tracking-wide text-xs text-muted-foreground/85">{isEn ? 'Built with precision.' : 'مبني بدقة.'}</p>
         </div>
       </div>
     </footer>

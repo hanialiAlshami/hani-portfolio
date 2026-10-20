@@ -6,19 +6,25 @@ import { getSiteSettings } from '@/lib/data/site-settings';
 import Link from 'next/link';
 
 import { constructMetadata } from '@/lib/seo';
+import { setRequestLocale } from 'next-intl/server';
+
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'ar' }];
+}
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
   return constructMetadata({
-    title: locale === 'en' ? 'Resume' : 'السيرة الذاتية',
+    title: locale === 'en' ? 'Resume — Experience & Qualifications' : 'السيرة الذاتية — الخبرات والمؤهلات',
     description: locale === 'en'
-      ? 'View my professional experience and qualifications.'
-      : 'عرض خبراتي ومؤهلاتي المهنية.',
+      ? 'My professional experience building websites, e-commerce stores, dashboards, and business systems for clients.'
+      : 'خبراتي المهنية في إنشاء المواقع الإلكترونية والمتاجر ولوحات التحكم وأنظمة الأعمال للعملاء.',
     locale,
     path: '/resume',
   });
 }
 
 export default async function ResumePage({ params: { locale } }: { params: { locale: string } }) {
+  setRequestLocale(locale);
   const isEn = locale === 'en';
   const settings = await getSiteSettings();
   const allResumeSections = await getResumeSections();
@@ -34,11 +40,14 @@ export default async function ResumePage({ params: { locale } }: { params: { loc
           : 'سجل الأثر المهني — كل دور اخترته لتعميق الخبرة وتحقيق نتائج أعلى قيمة.'}
       >
         {settings.cvUrl && (
-          <a href={settings.cvUrl} target="_blank" rel="noopener noreferrer">
-            <button className="inline-flex items-center gap-2 border border-primary/40 text-primary hover:bg-primary/10 hover:border-primary/60 font-semibold text-sm px-6 py-3 rounded-full transition-all duration-200">
-              <Download className="w-4 h-4" />
-              {isEn ? 'Download CV' : 'تحميل السيرة الذاتية'}
-            </button>
+          <a
+            href={settings.cvUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 border border-primary/40 text-primary hover:bg-primary/10 hover:border-primary/60 font-semibold text-sm px-6 py-3 rounded-full transition-all duration-200"
+          >
+            <Download className="w-4 h-4" />
+            {isEn ? 'Download CV' : 'تحميل السيرة الذاتية'}
           </a>
         )}
       </PageHero>

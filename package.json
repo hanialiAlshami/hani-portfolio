@@ -2,6 +2,13 @@
   "name": "portfolio-nextjs",
   "version": "0.1.0",
   "private": true,
+  "browserslist": [
+    "chrome >= 105",
+    "edge >= 105",
+    "firefox >= 104",
+    "safari >= 15.4",
+    "not dead"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -25,6 +32,7 @@
     "next-intl": "^3.14.1",
     "react": "^18",
     "react-dom": "^18",
+    "sharp": "^0.35.5",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "three": "^0.164.1",
@@ -35,6 +43,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/three": "^0.164.1",
+    "critters": "^0.0.23",
     "eslint": "^8",
     "eslint-config-next": "^14.2.35",
     "postcss": "^8",

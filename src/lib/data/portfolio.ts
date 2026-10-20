@@ -1,4 +1,5 @@
-import { createClient } from '../supabase/server';
+import { supabase } from '../supabase/client';
+import { unstable_cache } from 'next/cache';
 import { 
   projects as localProjects, 
   services as localServices, 
@@ -11,13 +12,12 @@ import { Project, Service, Skill, SkillCategory, ResumeSection } from '@/types';
 /**
  * Data Access Layer
  * 
- * Safely fetches data from Supabase if configured.
+ * Safely fetches data from Supabase with high-performance caching (unstable_cache).
  * If Supabase is missing or the fetch fails, it automatically falls back
  * to the local seed data in `src/data/seed.ts`.
  */
 
-export async function getProjects(): Promise<Project[]> {
-  const supabase = createClient();
+async function fetchProjectsRaw(): Promise<Project[]> {
   if (supabase) {
     try {
       const { data: projectsData, error: projectsError } = await supabase
@@ -35,7 +35,7 @@ export async function getProjects(): Promise<Project[]> {
 
         const images = !imagesError && imagesData ? imagesData : [];
 
-        return projectsData.map(p => {
+        const remoteProjects: Project[] = projectsData.map(p => {
           const projectImages = images.filter(img => img.project_id === p.id);
           
           return {
@@ -72,6 +72,10 @@ export async function getProjects(): Promise<Project[]> {
             }))
           };
         });
+
+        const remoteSlugs = new Set(remoteProjects.map(p => p.slug));
+        const missingLocal = localProjects.filter(p => !remoteSlugs.has(p.slug));
+        return [...missingLocal, ...remoteProjects].sort((a, b) => a.order - b.order);
       }
     } catch (e) {
       console.warn('Supabase fetch failed for projects, falling back to local seed data.', e);
@@ -80,11 +84,21 @@ export async function getProjects(): Promise<Project[]> {
   return localProjects;
 }
 
-export async function getServices(): Promise<Service[]> {
-  const supabase = createClient();
+export const getProjects = unstable_cache(
+  fetchProjectsRaw,
+  ['portfolio-projects-cache-v6'],
+  { revalidate: 3600, tags: ['projects'] }
+);
+
+async function fetchServicesRaw(): Promise<Service[]> {
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('services').select('*').eq('is_published', true).order('sort_order', { ascending: true });
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .eq('is_published', true)
+        .order('sort_order', { ascending: true });
+
       if (!error && data && data.length > 0) {
         return data.map(s => ({
           id: s.id,
@@ -104,11 +118,21 @@ export async function getServices(): Promise<Service[]> {
   return localServices;
 }
 
-export async function getSkills(): Promise<Skill[]> {
-  const supabase = createClient();
+export const getServices = unstable_cache(
+  fetchServicesRaw,
+  ['portfolio-services-cache'],
+  { revalidate: 3600, tags: ['services'] }
+);
+
+async function fetchSkillsRaw(): Promise<Skill[]> {
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('skills').select('*').eq('is_published', true).order('sort_order', { ascending: true });
+      const { data, error } = await supabase
+        .from('skills')
+        .select('*')
+        .eq('is_published', true)
+        .order('sort_order', { ascending: true });
+
       if (!error && data && data.length > 0) {
         return data.map(s => ({
           id: s.id,
@@ -126,11 +150,21 @@ export async function getSkills(): Promise<Skill[]> {
   return localSkills;
 }
 
-export async function getSkillCategories(): Promise<SkillCategory[]> {
-  const supabase = createClient();
+export const getSkills = unstable_cache(
+  fetchSkillsRaw,
+  ['portfolio-skills-cache'],
+  { revalidate: 3600, tags: ['skills'] }
+);
+
+async function fetchSkillCategoriesRaw(): Promise<SkillCategory[]> {
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('skill_categories').select('*').eq('is_published', true).order('sort_order', { ascending: true });
+      const { data, error } = await supabase
+        .from('skill_categories')
+        .select('*')
+        .eq('is_published', true)
+        .order('sort_order', { ascending: true });
+
       if (!error && data && data.length > 0) {
         return data.map(c => ({
           id: c.id,
@@ -145,11 +179,21 @@ export async function getSkillCategories(): Promise<SkillCategory[]> {
   return localSkillCategories;
 }
 
-export async function getResumeSections(): Promise<ResumeSection[]> {
-  const supabase = createClient();
+export const getSkillCategories = unstable_cache(
+  fetchSkillCategoriesRaw,
+  ['portfolio-skill-categories-cache'],
+  { revalidate: 3600, tags: ['skills', 'skill_categories'] }
+);
+
+async function fetchResumeSectionsRaw(): Promise<ResumeSection[]> {
   if (supabase) {
     try {
-      const { data, error } = await supabase.from('resume_sections').select('*').eq('is_published', true).order('sort_order', { ascending: true });
+      const { data, error } = await supabase
+        .from('resume_sections')
+        .select('*')
+        .eq('is_published', true)
+        .order('sort_order', { ascending: true });
+
       if (!error && data && data.length > 0) {
         return data.map(r => ({
           id: r.id,
@@ -169,3 +213,9 @@ export async function getResumeSections(): Promise<ResumeSection[]> {
   }
   return localResumeSections;
 }
+
+export const getResumeSections = unstable_cache(
+  fetchResumeSectionsRaw,
+  ['portfolio-resume-sections-cache'],
+  { revalidate: 3600, tags: ['resume'] }
+);

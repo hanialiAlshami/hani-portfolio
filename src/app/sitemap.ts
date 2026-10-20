@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next';
 import { getBaseUrl } from '@/lib/seo';
-import { getProjects } from '@/lib/data/portfolio';
+import { supabase } from '@/lib/supabase/client';
+import { projects as seedProjects } from '@/data/seed';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Cache and revalidate hourly to prevent slow blocking fetches
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = getBaseUrl();
@@ -27,17 +28,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(),
         changeFrequency: 'weekly',
         priority: route === '' ? 1 : 0.8,
+        alternates: {
+          languages: {
+            ar: `${baseUrl}/ar${route}`,
+            en: `${baseUrl}/en${route}`,
+          },
+        },
       });
     });
   });
 
-  // Add dynamic project routes safely
+  // Add dynamic project routes safely without cookie dependency
   try {
-    const projects = await getProjects();
-    projects.forEach((project) => {
+    let slugs: string[] = [];
+    if (supabase) {
+      const { data } = await supabase
+        .from('projects')
+        .select('slug')
+        .eq('is_published', true);
+      if (data && data.length > 0) {
+        slugs = data.map((p) => p.slug);
+      }
+    }
+    
+    if (slugs.length === 0) {
+      slugs = seedProjects.map((p) => p.slug);
+    }
+
+    slugs.forEach((slug) => {
       locales.forEach((locale) => {
         sitemapEntries.push({
-          url: `${baseUrl}/${locale}/projects/${project.slug}`,
+          url: `${baseUrl}/${locale}/projects/${slug}`,
           lastModified: new Date(),
           changeFrequency: 'monthly',
           priority: 0.6,

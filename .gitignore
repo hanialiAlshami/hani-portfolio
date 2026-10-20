@@ -1,23 +1,53 @@
+# Environment & Local configs
 .env.local
 .env*.local
+
+# Build & Dependencies
 .next/
 .vercel/
 node_modules/
+*.tsbuildinfo
+
+# Logs & Error files
 *.log
+*.err
+dev.err
+
+# Backups & Temp files
+*.bak
+*.tmp
 .DS_Store
 Thumbs.db
+f_*.png
 
-docs/archive/
+# Lighthouse & Audit Reports
+audit_results.html
+lighthouse-*.html
+localhost_*.report.html
+rpt_*.json
+lh-report/
+.unlighthouse/
+نتائج الفحص/
+*.py
 
-supabase/.temp/
-public/models/
-public/avatar/*.glb
+# Brag video generation artifacts
+brag-*/
+brag-output*/
 
-scripts/create-admin.mjs
-
-src/components/shared/Avatar3D.tsx
-public/video/
-*.tsbuildinfo
+# Media / Archives / Unused Large Assets
 *.zip
 *.mp4
+public/video/
+public/models/
+public/avatar/*.glb
+public/portfolio/projects/CV/
+public/brand/temp-logo.jpeg
 
+# Scripts & Database local temp
+supabase/.temp/
+scripts/create-admin.mjs
+scripts/generate-lanyard-card.mjs
+
+# Docs
+docs/
+src/components/shared/Avatar3D.tsx

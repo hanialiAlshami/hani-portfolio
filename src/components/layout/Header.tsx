@@ -59,7 +59,6 @@ export function Header({ locale, ownerName, primaryCta }: {
               fill
               className="object-contain"
               sizes="32px"
-              priority
             />
           </div>
           <span className="font-bold text-base md:text-lg gold-gradient tracking-tight truncate max-w-[140px] md:max-w-none">
@@ -121,7 +120,7 @@ export function Header({ locale, ownerName, primaryCta }: {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors border-b border-white/[0.05] pb-4 flex items-center justify-between group"
+                className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors border-b border-white/[0.05] py-2.5 flex items-center justify-between group min-h-[44px]"
                 onClick={closeMenu}
               >
                 <span>{link.label}</span>
@@ -143,7 +142,7 @@ export function Header({ locale, ownerName, primaryCta }: {
             <Link
               href={`/${locale}/contact`}
               onClick={closeMenu}
-              className="flex items-center justify-center w-full px-6 py-3.5 rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 cta-glow"
+              className="flex items-center justify-center w-full px-6 py-3.5 rounded-full text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 cta-glow min-h-[44px]"
             >
               {isEn ? (primaryCta?.en || 'Hire Me') : (primaryCta?.ar || 'وظفني')}
             </Link>

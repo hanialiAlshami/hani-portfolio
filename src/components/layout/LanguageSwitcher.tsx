@@ -16,7 +16,7 @@ export function LanguageSwitcher() {
   };
 
   return (
-    <Button variant="ghost" onClick={switchLocale} className="font-medium">
+    <Button variant="ghost" onClick={switchLocale} className="font-medium min-h-[36px] px-3">
       {locale === 'en' ? 'العربية' : 'English'}
     </Button>
   );

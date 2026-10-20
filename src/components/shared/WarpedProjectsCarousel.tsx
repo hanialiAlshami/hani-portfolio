@@ -11,17 +11,22 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react';
-import { Project } from '@/types';
+export interface CarouselProject {
+  id: string;
+  slug: string;
+  title: { ar: string; en: string };
+  imageUrl: string;
+}
 
 export interface WarpedProjectsCarouselProps {
-  projects: Project[];
+  projects: CarouselProject[];
   locale: string;
 }
 
 /**
  * Extracts the exact website name from the project title without trailing descriptors or badges.
  */
-function getWebsiteName(project: Project, isEn: boolean): string {
+function getWebsiteName(project: CarouselProject, isEn: boolean): string {
   const rawTitle = isEn ? project.title?.en : project.title?.ar;
   if (!rawTitle) return '';
   const clean = rawTitle.split(/—|–|-|:|\|/)[0].trim();
@@ -43,7 +48,7 @@ export function WarpedProjectsCarousel({ projects, locale }: WarpedProjectsCarou
 
   const [activeIdx, setActiveIdx] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
+  const [isAutoPaused, setIsAutoPaused] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   // Drag & gesture state (isolated strictly to stage viewport)
@@ -100,16 +105,16 @@ export function WarpedProjectsCarousel({ projects, locale }: WarpedProjectsCarou
     [activeIdx, count, prefersReducedMotion]
   );
 
-  // Smart Autoplay (5s, paused on hover, drag, or when tab is hidden)
+  // Autoplay: advances continuously, then stops for good after the first manual interaction
   useEffect(() => {
-    if (count <= 1 || isHovering || isDragging || prefersReducedMotion) return;
+    if (count <= 1 || isAutoPaused || isDragging || prefersReducedMotion) return;
     const interval = setInterval(() => {
       if (!document.hidden && !isTransitioningRef.current) {
         navigate(1);
       }
-    }, 5500);
+    }, 2000);
     return () => clearInterval(interval);
-  }, [count, isHovering, isDragging, prefersReducedMotion, navigate]);
+  }, [count, isAutoPaused, isDragging, prefersReducedMotion, navigate]);
 
   // Keyboard navigation (Left / Right arrow keys)
   useEffect(() => {
@@ -122,9 +127,11 @@ export function WarpedProjectsCarousel({ projects, locale }: WarpedProjectsCarou
       }
       if (e.key === 'ArrowRight') {
         e.preventDefault();
+        setIsAutoPaused(true);
         navigate(1);
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
+        setIsAutoPaused(true);
         navigate(-1);
       }
     };
@@ -172,6 +179,7 @@ export function WarpedProjectsCarousel({ projects, locale }: WarpedProjectsCarou
     setDragOffset(0);
 
     if (Math.abs(delta) > 35) {
+      setIsAutoPaused(true);
       navigate(delta < 0 ? 1 : -1);
     }
 
@@ -204,8 +212,9 @@ export function WarpedProjectsCarousel({ projects, locale }: WarpedProjectsCarou
       aria-roledescription="carousel"
       aria-label={isEn ? 'Featured Projects 3D Showcase' : 'معرض المشاريع المميزة ثلاثي الأبعاد'}
       tabIndex={0}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onClickCapture={(e) => {
+        if (e.button === 0) setIsAutoPaused(true);
+      }}
     >
       {/* ── 3D Stage Viewport ── */}
       <div
@@ -338,7 +347,6 @@ export function WarpedProjectsCarousel({ projects, locale }: WarpedProjectsCarou
                   alt={websiteName}
                   fill
                   sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 720px"
-                  priority={isCenter}
                   className="object-cover object-center select-none pointer-events-none"
                 />
 
@@ -382,6 +390,44 @@ export function WarpedProjectsCarousel({ projects, locale }: WarpedProjectsCarou
           );
         })}
 
+        {/* ── Flat side click zones (hit-testing fix for preserve-3d cards) ── */}
+        {count > 1 && (
+          <>
+            <button
+              type="button"
+              aria-hidden="true"
+              tabIndex={-1}
+              onClick={(e) => {
+                if (hasDragged.current) return;
+                e.stopPropagation();
+                setIsAutoPaused(true);
+                navigate(-1);
+              }}
+              className="absolute top-0 bottom-0 left-0 z-[15] border-0 bg-transparent p-0 cursor-pointer"
+              style={{
+                width: 'calc(50% - clamp(160px, 24vw, 360px))',
+                touchAction: 'pan-y',
+              }}
+            />
+            <button
+              type="button"
+              aria-hidden="true"
+              tabIndex={-1}
+              onClick={(e) => {
+                if (hasDragged.current) return;
+                e.stopPropagation();
+                setIsAutoPaused(true);
+                navigate(1);
+              }}
+              className="absolute top-0 bottom-0 right-0 z-[15] border-0 bg-transparent p-0 cursor-pointer"
+              style={{
+                width: 'calc(50% - clamp(160px, 24vw, 360px))',
+                touchAction: 'pan-y',
+              }}
+            />
+          </>
+        )}
+
         {/* ── Desktop Hover Nav Arrows (Discreet Chevrons) ── */}
         {count > 1 && (
           <>
@@ -415,12 +461,12 @@ export function WarpedProjectsCarousel({ projects, locale }: WarpedProjectsCarou
       {count > 1 && (
         <div
           className="relative z-30 flex items-center justify-center mt-[15px]"
-          role="tablist"
-          aria-label={isEn ? 'Slide indicator' : 'مؤشر الشرائح'}
           onPointerDown={(e) => e.stopPropagation()}
         >
           <div
-            className="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-full"
+            className="inline-flex items-center justify-center gap-1 px-2.5 py-1 rounded-full"
+            role="tablist"
+            aria-label={isEn ? 'Slide indicator' : 'مؤشر الشرائح'}
             style={{
               background: 'rgba(255, 255, 255, 0.12)',
               backdropFilter: 'blur(12px)',
@@ -432,24 +478,29 @@ export function WarpedProjectsCarousel({ projects, locale }: WarpedProjectsCarou
             {validProjects.map((p, idx) => (
               <button
                 key={p.id || idx}
+                role="tab"
+                aria-selected={idx === activeIdx}
+                aria-label={`Go to slide ${idx + 1}: ${getWebsiteName(p, isEn)}`}
+                tabIndex={idx === activeIdx ? 0 : -1}
                 onClick={(e) => {
                   e.stopPropagation();
                   goTo(idx);
                 }}
                 onPointerDown={(e) => e.stopPropagation()}
-                aria-label={`Go to slide ${idx + 1}: ${getWebsiteName(p, isEn)}`}
-                className="transition-all duration-300 rounded-full cursor-pointer"
-                style={{
-                  width: idx === activeIdx ? '16px' : '6px',
-                  height: '6px',
-                  backgroundColor:
-                    idx === activeIdx ? '#FFFFFF' : 'rgba(255, 255, 255, 0.35)',
-                  boxShadow:
-                    idx === activeIdx ? '0 0 8px rgba(255, 255, 255, 0.8)' : 'none',
-                  border: 'none',
-                  padding: 0,
-                }}
-              />
+                className="relative flex items-center justify-center min-w-[28px] min-h-[28px] p-1.5 m-0 border-none bg-transparent cursor-pointer rounded-full transition-transform duration-200 active:scale-95 focus:outline-none focus-visible:ring-1 focus-visible:ring-white/60"
+              >
+                <span
+                  className="block rounded-full transition-all duration-300 pointer-events-none"
+                  style={{
+                    width: idx === activeIdx ? '16px' : '6px',
+                    height: '6px',
+                    backgroundColor:
+                      idx === activeIdx ? '#FFFFFF' : 'rgba(255, 255, 255, 0.35)',
+                    boxShadow:
+                      idx === activeIdx ? '0 0 8px rgba(255, 255, 255, 0.8)' : 'none',
+                  }}
+                />
+              </button>
             ))}
           </div>
         </div>

@@ -1,31 +1,33 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import { Input } from '@/components/ui/Input';
 import { Textarea } from '@/components/ui/Textarea';
-import { Mail, MessageSquare, MapPin, CheckCircle2, AlertCircle, Shield } from 'lucide-react';
+import { Mail, MessageSquare, MapPin, Shield } from 'lucide-react';
 import { getSiteSettings } from '@/lib/data/site-settings';
 import { sendContactMessageAction } from './actions';
 import { SubmitButton } from '@/components/admin/SubmitButton';
+import { ContactStatus } from '@/components/shared/ContactStatus';
 
 import { constructMetadata } from '@/lib/seo';
+import { setRequestLocale } from 'next-intl/server';
+
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'ar' }];
+}
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
   return constructMetadata({
-    title: locale === 'en' ? 'Contact' : 'تواصل معي',
+    title: locale === 'en' ? 'Contact — Request a Free Website Quote' : 'تواصل معي — اطلب عرض سعر لموقعك',
     description: locale === 'en'
-      ? 'Get in touch for freelance projects or full-time opportunities.'
-      : 'تواصل معي لمشاريع العمل الحر أو فرص العمل بدوام كامل.',
+      ? 'Tell me about your project — a website, online store, or management system — and get a clear estimate and timeline within 24 hours.'
+      : 'أخبرني عن مشروعك — موقع إلكتروني، متجر، أو نظام إدارة — وستحصل على تقدير واضح وخطة زمنية خلال 24 ساعة.',
     locale,
     path: '/contact',
   });
 }
 
-export default async function ContactPage({
-  params: { locale },
-  searchParams
-}: {
-  params: { locale: string };
-  searchParams: { status?: string; error?: string };
-}) {
+export default async function ContactPage({ params: { locale } }: { params: { locale: string } }) {
+  setRequestLocale(locale);
   const isEn = locale === 'en';
   const settings = await getSiteSettings();
   const formAction = sendContactMessageAction.bind(null, locale);
@@ -127,27 +129,10 @@ export default async function ContactPage({
               </p>
             </div>
 
-            {/* Status alerts */}
-            {searchParams.status === 'sent' && (
-              <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 flex items-start gap-3">
-                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-                <p className="text-sm leading-relaxed">
-                  {isEn
-                    ? 'Thank you! Your message has been sent. I will get back to you soon.'
-                    : 'شكراً لك! تم إرسال رسالتك بنجاح. سأرد عليك قريباً.'}
-                </p>
-              </div>
-            )}
-            {(searchParams.error === 'invalid' || searchParams.error === 'send-failed') && (
-              <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 flex items-start gap-3">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <p className="text-sm leading-relaxed">
-                  {searchParams.error === 'invalid'
-                    ? (isEn ? 'Please fill out all required fields correctly.' : 'يرجى تعبئة جميع الحقول المطلوبة بشكل صحيح.')
-                    : (isEn ? 'Failed to send. Please try again later.' : 'فشل الإرسال. حاول مجدداً لاحقاً.')}
-                </p>
-              </div>
-            )}
+            {/* Status alerts (read client-side so the page stays static) */}
+            <Suspense fallback={null}>
+              <ContactStatus isEn={isEn} />
+            </Suspense>
           </div>
 
           {/* Right: Form */}

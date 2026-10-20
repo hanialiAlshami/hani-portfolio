@@ -6,19 +6,25 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 import { constructMetadata } from '@/lib/seo';
+import { setRequestLocale } from 'next-intl/server';
+
+export function generateStaticParams() {
+  return [{ locale: 'en' }, { locale: 'ar' }];
+}
 
 export function generateMetadata({ params: { locale } }: { params: { locale: string } }): Metadata {
   return constructMetadata({
-    title: locale === 'en' ? 'Skills' : 'المهارات',
+    title: locale === 'en' ? 'Technical Skills & Tech Stack' : 'المهارات والتقنيات التي أعمل بها',
     description: locale === 'en'
-      ? 'Technical skills focused on delivering business value and robust architecture.'
-      : 'مهارات تقنية تركز على تقديم قيمة للأعمال وبنية قوية.',
+      ? 'The stack behind my work: Next.js, React, Laravel, TypeScript, Node.js, Supabase, PostgreSQL, and WooCommerce — focused on speed, security, and SEO.'
+      : 'التقنيات التي أبني بها المشاريع: Next.js وReact وLaravel وTypeScript وNode.js وSupabase وPostgreSQL وWooCommerce — بتركيز على السرعة والأمان وتحسين محركات البحث.',
     locale,
     path: '/skills',
   });
 }
 
 export default async function SkillsPage({ params: { locale } }: { params: { locale: string } }) {
+  setRequestLocale(locale);
   const isEn = locale === 'en';
   const skills = await getSkills();
   const skillCategories = await getSkillCategories();

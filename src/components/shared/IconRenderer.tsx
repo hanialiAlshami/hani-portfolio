@@ -1,49 +1,136 @@
 "use client";
 
 import * as React from "react";
-import * as Icons from "lucide-react";
-import { LucideProps } from "lucide-react";
+import {
+  Laptop,
+  Monitor,
+  Code,
+  Code2,
+  Webhook,
+  Network,
+  GitBranch,
+  Phone,
+  Smartphone,
+  ShoppingCart,
+  ShoppingBag,
+  Database,
+  Server,
+  Globe,
+  Search,
+  Zap,
+  Settings,
+  Hexagon,
+  FileCode,
+  FileJson,
+  FileCode2,
+  Atom,
+  Triangle,
+  Wind,
+  LayoutTemplate,
+  Layout,
+  Cpu,
+  Github,
+  Cloud,
+  Box,
+  HelpCircle,
+  Shield,
+  Users,
+  CheckCircle2,
+  Layers,
+  Terminal,
+  Compass,
+  Briefcase,
+  Sparkles,
+  Award,
+  BookOpen,
+  Mail,
+  Send,
+  LucideProps,
+  LucideIcon
+} from "lucide-react";
 
-const iconMap: Record<string, any> = {
-  // Services
-  laptop: Icons.Laptop,
-  computer: Icons.Monitor,
-  code: Icons.Code,
-  api: Icons.Webhook,
-  integration: Icons.Network,
-  workflow: Icons.GitBranch,
-  phone: Icons.Phone,
-  smartphone: Icons.Smartphone,
-  cart: Icons.ShoppingCart,
-  'shopping-cart': Icons.ShoppingCart,
-  ecommerce: Icons.ShoppingBag,
-  database: Icons.Database,
-  server: Icons.Server,
-  globe: Icons.Globe,
-  seo: Icons.Search,
-  speed: Icons.Zap,
-  settings: Icons.Settings,
+const iconMap: Record<string, LucideIcon> = {
+  // Services & General
+  laptop: Laptop,
+  computer: Monitor,
+  monitor: Monitor,
+  code: Code,
+  code2: Code2,
+  api: Webhook,
+  webhook: Webhook,
+  integration: Network,
+  network: Network,
+  workflow: GitBranch,
+  gitbranch: GitBranch,
+  'git-branch': GitBranch,
+  phone: Phone,
+  smartphone: Smartphone,
+  cart: ShoppingCart,
+  'shopping-cart': ShoppingCart,
+  shoppingcart: ShoppingCart,
+  ecommerce: ShoppingBag,
+  shoppingbag: ShoppingBag,
+  'shopping-bag': ShoppingBag,
+  database: Database,
+  server: Server,
+  globe: Globe,
+  seo: Search,
+  search: Search,
+  speed: Zap,
+  zap: Zap,
+  settings: Settings,
+  shield: Shield,
+  users: Users,
+  checkcircle2: CheckCircle2,
+  'check-circle-2': CheckCircle2,
+  layers: Layers,
+  terminal: Terminal,
+  compass: Compass,
+  briefcase: Briefcase,
+  sparkles: Sparkles,
+  award: Award,
+  bookopen: BookOpen,
+  'book-open': BookOpen,
+  mail: Mail,
+  send: Send,
+  layout: Layout,
+  cpu: Cpu,
 
   // Skills
-  laravel: Icons.Hexagon,
-  php: Icons.FileCode,
-  mysql: Icons.Database,
-  javascript: Icons.FileJson,
-  typescript: Icons.FileCode2,
-  react: Icons.Atom,
-  next: Icons.Triangle,
-  tailwind: Icons.Wind,
-  wordpress: Icons.LayoutTemplate,
-  woocommerce: Icons.ShoppingCart,
-  github: Icons.Github,
-  hosting: Icons.Cloud,
-  performance: Icons.Zap,
+  laravel: Hexagon,
+  hexagon: Hexagon,
+  php: FileCode,
+  filecode: FileCode,
+  'file-code': FileCode,
+  mysql: Database,
+  javascript: FileJson,
+  filejson: FileJson,
+  'file-json': FileJson,
+  typescript: FileCode2,
+  filecode2: FileCode2,
+  'file-code-2': FileCode2,
+  react: Atom,
+  atom: Atom,
+  next: Triangle,
+  triangle: Triangle,
+  tailwind: Wind,
+  wind: Wind,
+  wordpress: LayoutTemplate,
+  layouttemplate: LayoutTemplate,
+  'layout-template': LayoutTemplate,
+  woocommerce: ShoppingCart,
+  github: Github,
+  hosting: Cloud,
+  cloud: Cloud,
+  performance: Zap,
+  box: Box,
+  helpcircle: HelpCircle,
+  'help-circle': HelpCircle,
 };
 
 export function IconRenderer({ iconName, className, ...props }: { iconName?: string | null, className?: string } & LucideProps) {
   if (!iconName) {
-    const Fallback = Icons.Box || Icons.HelpCircle;
-    return Fallback ? <Fallback className={className} {...props} /> : null;
+    return <Box className={className} {...props} />;
   }
 
   // Handle URL icons (Supabase or other external)
@@ -60,22 +147,10 @@ export function IconRenderer({ iconName, className, ...props }: { iconName?: str
   }
 
   const normalized = iconName.trim().toLowerCase().replace(/_/g, '-');
+  const normalizedNoHyphen = normalized.replace(/-/g, '');
   
-  // Try exact match in map
-  let IconComponent = iconMap[normalized];
-  
-  // Try finding exact match in lucide-react by converting to PascalCase
-  if (!IconComponent) {
-    const pascalCased = normalized.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
-    IconComponent = (Icons as any)?.[pascalCased];
-  }
-
-  // Fallback neutral icon
-  if (!IconComponent || (typeof IconComponent !== 'function' && typeof IconComponent !== 'object')) {
-    IconComponent = Icons.Box || Icons.HelpCircle;
-  }
-
-  if (!IconComponent) return null;
+  // Try exact match or unhyphenated match in map
+  const IconComponent = iconMap[normalized] || iconMap[normalizedNoHyphen] || Box;
 
   return <IconComponent className={className} {...props} />;
 }

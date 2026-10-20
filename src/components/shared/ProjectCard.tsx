@@ -170,7 +170,8 @@ export function ProjectCard({ project, locale, index }: { project: Project, loca
                   alt={title}
                   fill
                   sizes="(max-width: 768px) 100vw, 70vw"
-                  className="object-cover transition-transform duration-[2s] ease-out group-hover/img:scale-[1.04]"
+                  className="object-cover transition-transform ease-out group-hover/img:scale-[1.04]"
+                  style={{ transitionDuration: '2000ms' }}
                 />
               ) : (
                 <PlaceholderImage text={isEn ? "Project Preview" : "معاينة المشروع"} className="rounded-none border-0" />

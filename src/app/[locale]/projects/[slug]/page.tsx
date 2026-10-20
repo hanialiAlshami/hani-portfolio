@@ -9,6 +9,7 @@ import { ExternalLink, Github, Lock, PlayCircle, Layers, Wrench, Monitor, Termin
 import { HoverExpand, type HoverExpandItem } from '@/components/unlumen-ui/hover-expand';
 
 import { constructMetadata } from '@/lib/seo';
+import { setRequestLocale } from 'next-intl/server';
 
 export async function generateMetadata({ params: { locale, slug } }: { params: { locale: string; slug: string } }): Promise<Metadata> {
   const projects = await getProjects();
@@ -27,7 +28,19 @@ export async function generateMetadata({ params: { locale, slug } }: { params: {
   });
 }
 
+export async function generateStaticParams() {
+  const projects = await getProjects();
+  const locales = ['ar', 'en'];
+  return locales.flatMap(locale => 
+    projects.map(p => ({
+      locale,
+      slug: p.slug
+    }))
+  );
+}
+
 export default async function ProjectDetailsPage({ params: { locale, slug } }: { params: { locale: string; slug: string } }) {
+  setRequestLocale(locale);
   const isEn = locale === 'en';
   const projects = await getProjects();
   const project = projects.find(p => p.slug === slug);
@@ -115,7 +128,8 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
               fill
               priority
               sizes="100vw"
-              className="object-cover group-hover:scale-[1.03] transition-transform duration-[1.5s]"
+              className="object-cover group-hover:scale-[1.03] transition-transform"
+              style={{ transitionDuration: '1500ms' }}
             />
           ) : (
             <PlaceholderImage text={isEn ? 'Project Preview' : 'معاينة المشروع'} className="border-0 rounded-none" />
@@ -139,7 +153,7 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
                 <section key={key}>
                   <div className="flex items-center gap-3 mb-5">
                     <span className="h-px w-5 bg-primary/50" />
-                    <span className="text-xs font-bold tracking-[0.18em] uppercase text-primary/70">{label}</span>
+                    <span className="text-xs font-bold tracking-[0.18em] uppercase text-amber-400">{label}</span>
                   </div>
                   {quote ? (
                     <blockquote className="border-l-2 rtl:border-l-0 rtl:border-r-2 border-primary/40 pl-6 rtl:pl-0 rtl:pr-6 text-base text-foreground/80 leading-relaxed">
@@ -157,7 +171,7 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
               <section className="glass p-8 rounded-2xl border border-primary/15">
                 <div className="flex items-center gap-3 mb-5">
                   <span className="h-px w-5 bg-primary/50" />
-                  <span className="text-xs font-bold tracking-[0.18em] uppercase text-primary/70">
+                  <span className="text-xs font-bold tracking-[0.18em] uppercase text-amber-400">
                     {isEn ? 'Business Impact & Results' : 'الأثر التجاري والنتائج'}
                   </span>
                 </div>
@@ -172,7 +186,7 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
               <section>
                 <div className="flex items-center gap-3 mb-6">
                   <span className="h-px w-5 bg-primary/50" />
-                  <span className="text-xs font-bold tracking-[0.18em] uppercase text-primary/70">
+                  <span className="text-xs font-bold tracking-[0.18em] uppercase text-amber-400">
                     {isEn ? 'Demo Recording' : 'تسجيل العرض'}
                   </span>
                 </div>
@@ -192,9 +206,9 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
           <div className="space-y-6 lg:sticky lg:top-28 self-start">
             {/* Project Brief */}
             <div className="glass p-7 rounded-2xl border border-primary/15">
-              <h3 className="text-xs font-bold tracking-[0.18em] uppercase text-primary/70 mb-6">
+              <h2 className="text-xs font-bold tracking-[0.18em] uppercase text-amber-400 mb-6">
                 {isEn ? 'Project Brief' : 'ملخص المشروع'}
-              </h3>
+              </h2>
               <div className="space-y-5">
                 <div>
                   <span className="text-[11px] text-muted-foreground uppercase tracking-wider block mb-1">
@@ -230,9 +244,9 @@ export default async function ProjectDetailsPage({ params: { locale, slug } }: {
             {/* Tech Stack */}
             {(project.projectFrameworks?.length > 0 || project.projectTools?.length > 0 || project.techStack?.length > 0) && (
               <div className="glass p-7 rounded-2xl border border-white/[0.06]">
-                <h3 className="text-xs font-bold tracking-[0.18em] uppercase text-muted-foreground mb-6">
+                <h2 className="text-xs font-bold tracking-[0.18em] uppercase text-foreground/90 mb-6">
                   {isEn ? 'Technical Stack' : 'التقنيات المستخدمة'}
-                </h3>
+                </h2>
                 <div className="space-y-5">
                   {project.projectFrameworks?.length > 0 && (
                     <div>
