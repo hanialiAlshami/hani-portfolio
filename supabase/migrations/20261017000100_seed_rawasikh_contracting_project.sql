@@ -53,10 +53,10 @@ BEGIN
             true,
             true,
             1,
-            '["TypeScript", "HTML5", "CSS3"]'::jsonb,
-            '["React 18", "Vite", "Lucide React"]'::jsonb,
-            '["Vite", "TypeScript", "ESLint", "Schema.org JSON-LD", "Modern CSS Variables"]'::jsonb,
-            '["Web App", "Corporate Showcase", "Contracting Portal", "Responsive Web"]'::jsonb
+            ARRAY['TypeScript', 'HTML5', 'CSS3'],
+            ARRAY['React 18', 'Vite', 'Lucide React'],
+            ARRAY['Vite', 'TypeScript', 'ESLint', 'Schema.org JSON-LD', 'Modern CSS Variables'],
+            ARRAY['Web App', 'Corporate Showcase', 'Contracting Portal', 'Responsive Web']
         ) RETURNING id INTO v_project_id;
     ELSE
         UPDATE public.projects SET

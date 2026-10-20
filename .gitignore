@@ -45,8 +45,7 @@ public/brand/temp-logo.jpeg
 
 # Scripts & Database local temp
 supabase/.temp/
-scripts/create-admin.mjs
-scripts/generate-lanyard-card.mjs
+scripts/
 
 # Docs
 docs/

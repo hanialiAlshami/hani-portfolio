@@ -38,7 +38,7 @@ export default async function Home({ params: { locale } }: { params: { locale: s
     getSkills(),
     getSiteSettings(),
   ]);
-  const featuredProjects = allProjects.filter(p => p.isFeatured).slice(0, 6);
+  const featuredProjects = allProjects.filter(p => p.isFeatured);
   const carouselProjects = featuredProjects.map(p => ({
     id: p.id,
     title: p.title,

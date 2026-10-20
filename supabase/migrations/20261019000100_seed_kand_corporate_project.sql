@@ -53,10 +53,10 @@ BEGIN
             true,
             true,
             1,
-            '["TypeScript", "JavaScript", "HTML5", "CSS3", "SQL"]'::jsonb,
-            '["Next.js 15", "React 19", "Tailwind CSS", "next-intl", "Framer Motion", "Prisma ORM", "NextAuth v4", "Three.js"]'::jsonb,
-            '["MariaDB", "mysql2", "bcryptjs", "Lucide React", "Turbopack", "Google Analytics 4"]'::jsonb,
-            '["Corporate Landing", "CMS & Admin Dashboard", "Bilingual RTL/LTR", "SEO-Ready Web", "Responsive Web"]'::jsonb
+            ARRAY['TypeScript', 'JavaScript', 'HTML5', 'CSS3', 'SQL'],
+            ARRAY['Next.js 15', 'React 19', 'Tailwind CSS', 'next-intl', 'Framer Motion', 'Prisma ORM', 'NextAuth v4', 'Three.js'],
+            ARRAY['MariaDB', 'mysql2', 'bcryptjs', 'Lucide React', 'Turbopack', 'Google Analytics 4'],
+            ARRAY['Corporate Landing', 'CMS & Admin Dashboard', 'Bilingual RTL/LTR', 'SEO-Ready Web', 'Responsive Web']
         ) RETURNING id INTO v_project_id;
     ELSE
         UPDATE public.projects SET

@@ -86,7 +86,7 @@ async function fetchProjectsRaw(): Promise<Project[]> {
 
 export const getProjects = unstable_cache(
   fetchProjectsRaw,
-  ['portfolio-projects-cache-v6'],
+  ['portfolio-projects-cache-v7'],
   { revalidate: 3600, tags: ['projects'] }
 );
 
