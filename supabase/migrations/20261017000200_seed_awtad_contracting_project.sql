@@ -53,10 +53,10 @@ BEGIN
             true,
             true,
             1,
-            '["TypeScript", "JavaScript", "HTML5", "CSS3", "SQL"]'::jsonb,
-            '["Next.js 16", "React 19", "Tailwind CSS v4", "Prisma ORM"]'::jsonb,
-            '["SQLite", "Jose (JWT)", "Lucide React", "Turbopack", "Schema.org JSON-LD"]'::jsonb,
-            '["Web App", "Corporate Showcase", "Contracting Portal", "CMS & Admin Dashboard", "Responsive Web"]'::jsonb
+            ARRAY['TypeScript', 'JavaScript', 'HTML5', 'CSS3', 'SQL'],
+            ARRAY['Next.js 16', 'React 19', 'Tailwind CSS v4', 'Prisma ORM'],
+            ARRAY['SQLite', 'Jose (JWT)', 'Lucide React', 'Turbopack', 'Schema.org JSON-LD'],
+            ARRAY['Web App', 'Corporate Showcase', 'Contracting Portal', 'CMS & Admin Dashboard', 'Responsive Web']
         ) RETURNING id INTO v_project_id;
     ELSE
         UPDATE public.projects SET
